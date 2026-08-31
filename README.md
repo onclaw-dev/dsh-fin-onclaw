@@ -53,9 +53,12 @@ npm.cmd run verify:pack
 
 ```powershell
 npm.cmd pack
-dsh plugin --profile fin-onclaw-rc2 add "C:\path\to\dsh-fin-onclaw-0.1.1-rc.2.plugin.1.tgz"
-dsh web --profile fin-onclaw-rc2
+$env:DSH_HOME = "C:\path\to\isolated-dsh-home"
+dsh plugin --profile web add "C:\path\to\dsh-fin-onclaw-0.1.1-rc.2.plugin.1.tgz" "dsh-better-sidebar@0.17.1" --save-exact
+dsh web --no-open
 ```
+
+rc.2 的 `web` 是固定 profile 别名，不能写成 `dsh web --profile <name>`。若 pnpm 11 首次安装因 Better Sidebar 的 `node-pty` 构建脚本而停止，只在该隔离 profile 的 `pnpm-workspace.yaml` 中把生成的 `allowBuilds.node-pty` 占位值改为 `true`，然后重跑同一条精确安装命令。Better Sidebar 0.17.1 声明的 DSH prerelease peer 范围会对 rc.2 产生告警；不得通过安装浮动或旧版 DSH 依赖来消除告警。
 
 启动后检查 Host 无注入错误、Better Sidebar 中 10 个业务页签和 settings 分节、共享登录、亮/暗主题、会话切换、卸载重载、native 成功与降级路径。profile 的具体状态/删除命令以当前 rc.2 CLI `dsh plugin --help` 输出为准；操作前记录安装的精确版本与 tarball SHA-256。
 
