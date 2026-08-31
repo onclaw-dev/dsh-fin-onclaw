@@ -1,0 +1,6 @@
+# Onclaw production Host defaults to https://onclaw.cc.
+- insert:
+    - id: dsh-fin-onclaw
+      name: dsh-fin-onclaw
+      inject: [credentials, settings, skills, tools, webServer]
+      config: {}

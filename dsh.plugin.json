@@ -1,0 +1,7 @@
+{
+  "id": "dsh-fin-onclaw",
+  "name": "dsh-fin-onclaw",
+  "platform": "web",
+  "host": "./lib/index.js",
+  "client": "./lib/client.js"
+}

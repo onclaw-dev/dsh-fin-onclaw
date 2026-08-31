@@ -1,21 +1,15 @@
-MIT License
+COMMERCIAL SOFTWARE LICENSE NOTICE
 
-Copyright (c) 2026 onclaw-dev
+Copyright (c) 2026 Onclaw. All rights reserved.
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+This software and its accompanying materials are proprietary commercial
+software. No right to use, copy, modify, distribute, sublicense, publish, or
+reverse engineer this software is granted except under a separate written
+agreement with Onclaw or as required by applicable law.
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+Access to Onclaw services and data is independently controlled by backend
+authentication, authorization, and usage policy. Possession of this package
+does not grant service or data entitlement.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+THE SOFTWARE IS PROVIDED SUBJECT TO THE WARRANTIES AND LIMITATIONS, IF ANY,
+STATED IN THE APPLICABLE COMMERCIAL AGREEMENT.

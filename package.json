@@ -1,0 +1,109 @@
+{
+  "name": "dsh-fin-onclaw",
+  "version": "0.1.1-rc.2.plugin.1",
+  "description": "Onclaw commercial workstation plugin for DeepSeek Harness",
+  "type": "module",
+  "main": "lib/index.js",
+  "exports": {
+    ".": "./lib/index.js",
+    "./client": "./lib/client.js",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "lib",
+    "assets",
+    "native",
+    "skills/onclaw-data/SKILL.md",
+    "skills/onclaw-data/agents",
+    "skills/onclaw-data/references",
+    "dsh.plugin.json",
+    "cordis.patch.yml",
+    "README.md",
+    "AGENTS.md",
+    "DISTRIBUTION.md",
+    "provenance.json",
+    "checksums.sha256"
+  ],
+  "scripts": {
+    "build:dev": "node scripts/build.mjs development --allow-dirty",
+    "build:release": "node scripts/build.mjs release",
+    "build:release:dev": "node scripts/build.mjs release --allow-dirty",
+    "verify": "node scripts/verify.mjs",
+    "verify:pack": "node scripts/verify.mjs --pack",
+    "pack:rc2": "npm run build:release && npm run verify:pack && npm pack",
+    "version:next": "node scripts/version.mjs",
+    "release:prepare": "node scripts/prepare-release.mjs",
+    "prepack": "node scripts/verify.mjs --pack"
+  },
+  "engines": {
+    "node": "^22.19.0 || >=24.0.0"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "inject": [
+        "@deepseek-ai/dsh-client-runtime",
+        "@deepseek-ai/dsh-client-ui-slots",
+        "@deepseek-ai/dsh-client-ui-sidebar",
+        "@deepseek-ai/dsh-client-ui-settings",
+        "dsh-better-sidebar"
+      ],
+      "platform": "web"
+    }
+  },
+  "deepseekHarness": {
+    "tag": "dsh-v0.1.1-rc.2",
+    "version": "0.1.1-rc.2",
+    "commit": "b150a551b8d465e31e418e1b2eaf5e79bbb7d28e",
+    "repository": "https://github.com/deepseek-ai/DeepSeek-Harness"
+  },
+  "peerDependencies": {
+    "@deepseek-ai/dsh-client-runtime": "0.1.1-rc.2",
+    "@deepseek-ai/dsh-client-ui-settings": "0.1.1-rc.2",
+    "@deepseek-ai/dsh-client-ui-sidebar": "0.1.1-rc.2",
+    "@deepseek-ai/dsh-client-ui-slots": "0.1.1-rc.2",
+    "@deepseek-ai/dsh-credentials": "0.1.1-rc.2",
+    "@deepseek-ai/dsh-settings": "0.1.1-rc.2",
+    "@deepseek-ai/dsh-skill": "0.1.1-rc.2",
+    "@deepseek-ai/dsh-tools": "0.1.1-rc.2",
+    "@deepseek-ai/schemastery": "3.18.1",
+    "dsh-better-sidebar": "0.17.1",
+    "react": "18.3.1",
+    "react-dom": "18.3.1"
+  },
+  "devDependencies": {
+    "@deepseek-ai/dsh-agent": "0.1.1-rc.2",
+    "@deepseek-ai/dsh-client-locale": "0.1.1-rc.2",
+    "@deepseek-ai/dsh-client-runtime": "0.1.1-rc.2",
+    "@deepseek-ai/dsh-client-ui-conversation": "0.1.1-rc.2",
+    "@deepseek-ai/dsh-client-ui-primitives": "0.1.1-rc.2",
+    "@deepseek-ai/dsh-client-ui-settings": "0.1.1-rc.2",
+    "@deepseek-ai/dsh-client-ui-sidebar": "0.1.1-rc.2",
+    "@deepseek-ai/dsh-client-ui-slots": "0.1.1-rc.2",
+    "@deepseek-ai/dsh-credentials": "0.1.1-rc.2",
+    "@deepseek-ai/dsh-host-webserver": "0.1.1-rc.2",
+    "@deepseek-ai/dsh-invariants": "0.1.1-rc.2",
+    "@deepseek-ai/dsh-llm": "0.1.1-rc.2",
+    "@deepseek-ai/dsh-session": "0.1.1-rc.2",
+    "@deepseek-ai/dsh-settings": "0.1.1-rc.2",
+    "@deepseek-ai/dsh-skill": "0.1.1-rc.2",
+    "@deepseek-ai/dsh-subagent": "0.1.1-rc.2",
+    "@deepseek-ai/dsh-tools": "0.1.1-rc.2",
+    "@deepseek-ai/schemastery": "3.18.1",
+    "dsh-better-sidebar": "0.17.1",
+    "javascript-obfuscator": "5.4.2",
+    "react": "18.3.1",
+    "react-dom": "18.3.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/onclaw-dev/dsh-fin-onclaw.git"
+  },
+  "publishConfig": {
+    "access": "public",
+    "tag": "rc2"
+  },
+  "license": "SEE LICENSE IN LICENSE"
+}
