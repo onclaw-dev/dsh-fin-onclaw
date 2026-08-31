@@ -88,6 +88,11 @@ if (process.argv.includes('--pack')) {
   for (const entry of entries) assert.doesNotMatch(entry, forbidden, entry)
   const allowedRoots = new Set(['package.json', 'README.md', 'AGENTS.md', 'DISTRIBUTION.md', 'LICENSE', 'dsh.plugin.json', 'cordis.patch.yml', 'provenance.json', 'checksums.sha256', 'lib', 'assets', 'native', 'skills'])
   for (const entry of entries) assert.ok(allowedRoots.has(entry.split('/')[0]), `not allowlisted: ${entry}`)
+  const checksums = (await readFile(path.join(root, 'checksums.sha256'), 'utf8'))
+    .split(/\r?\n/)
+    .filter(Boolean)
+    .map((line) => line.split('  ', 2)[1])
+  for (const entry of checksums) assert.ok(entries.includes(entry), `checksum references unpackaged file: ${entry}`)
   console.log(`npm dry-run verified: ${entries.length} allowlisted files, ${pack.size} bytes`)
 }
 console.log(`Verified ${manifest.name} ${manifest.version} (${provenance.build.mode})`)

@@ -153,7 +153,19 @@ async function harden(face, sourcePath, destinationPath) {
 }
 
 async function writeChecksums() {
-  const roots = ['lib', 'assets', 'skills', 'native', 'dsh.plugin.json', 'cordis.patch.yml', 'LICENSE', 'DISTRIBUTION.md', 'provenance.json']
+  const roots = [
+    'lib',
+    'assets',
+    'skills/onclaw-data/SKILL.md',
+    'skills/onclaw-data/agents',
+    'skills/onclaw-data/references',
+    'native',
+    'dsh.plugin.json',
+    'cordis.patch.yml',
+    'LICENSE',
+    'DISTRIBUTION.md',
+    'provenance.json',
+  ]
   const files = []
   for (const relative of roots) {
     const absolute = path.join(childRoot, relative)
