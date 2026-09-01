@@ -30,7 +30,7 @@ for (const [name, version] of Object.entries(manifest.peerDependencies)) {
 }
 for (const required of [
   'lib/index.js', 'lib/client.js', 'assets/wechat_qr.jpg',
-  'assets/knowledge-base-guide.png', 'skills/onclaw-data/SKILL.md',
+  'skills/onclaw-data/SKILL.md',
   'dsh.plugin.json', 'cordis.patch.yml', 'README.md', 'AGENTS.md',
   'DISTRIBUTION.md', 'provenance.json', 'checksums.sha256',
 ]) await access(path.join(root, required))
@@ -41,10 +41,7 @@ const [hostText, clientText, cordis, plugin] = await Promise.all([
   readFile(path.join(root, 'cordis.patch.yml'), 'utf8'),
   readFile(path.join(root, 'dsh.plugin.json'), 'utf8').then(JSON.parse),
 ])
-for (const [relative, mime] of [
-  ['assets/wechat_qr.jpg', 'image/jpeg'],
-  ['assets/knowledge-base-guide.png', 'image/png'],
-]) {
+for (const [relative, mime] of [['assets/wechat_qr.jpg', 'image/jpeg']]) {
   const packaged = await readFile(path.join(root, relative))
   const embedded = [...clientText.matchAll(new RegExp(`data:${mime};base64,([A-Za-z0-9+/=]+)`, 'g'))]
     .map((match) => Buffer.from(match[1], 'base64'))
