@@ -6,20 +6,20 @@
   },
   "build": {
     "mode": "release",
-    "publishable": false,
-    "developmentOverride": true,
+    "publishable": true,
+    "developmentOverride": false,
     "node": "v24.11.1",
     "platform": "darwin"
   },
   "parent": {
     "repository": "finagent_dev",
-    "revision": "7bf08ff4106eb209d6a659ddccfd5611a1a2f471",
-    "dirty": true
+    "revision": "f4a740ffd550ebc8228295c51c5d367599ac28cb",
+    "dirty": false
   },
   "child": {
     "repository": "git+https://github.com/onclaw-dev/dsh-fin-onclaw.git",
-    "revision": "9da6017437bcd4c28e9e591dbcba128145dc7ca9",
-    "dirty": true
+    "revision": "4ca44ab2b2e06e9eaa4e3897446c548677c7096f",
+    "dirty": false
   },
   "deepseekHarness": {
     "tag": "dsh-v0.1.1-rc.2",
