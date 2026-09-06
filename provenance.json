@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "package": {
+    "name": "dsh-fin-onclaw",
+    "version": "0.2.0"
+  },
+  "build": {
+    "mode": "release",
+    "publishable": false,
+    "developmentOverride": true,
+    "node": "v24.11.1",
+    "platform": "darwin"
+  },
+  "parent": {
+    "repository": "finagent_dev",
+    "revision": "7bf08ff4106eb209d6a659ddccfd5611a1a2f471",
+    "dirty": true
+  },
+  "child": {
+    "repository": "git+https://github.com/onclaw-dev/dsh-fin-onclaw.git",
+    "revision": "9da6017437bcd4c28e9e591dbcba128145dc7ca9",
+    "dirty": true
+  },
+  "deepseekHarness": {
+    "tag": "dsh-v0.1.1-rc.2",
+    "version": "0.1.1-rc.2",
+    "commit": "b150a551b8d465e31e418e1b2eaf5e79bbb7d28e",
+    "repository": "https://github.com/deepseek-ai/DeepSeek-Harness"
+  },
+  "dependencies": {
+    "lockfile": "package-lock.json",
+    "lockSha256": "23c3a567111550a84d79b8b5de5c4b2bb80d6cc9c62e6f4c55b55cd4fdada0dd",
+    "betterSidebar": "0.17.1",
+    "schemastery": "3.18.1",
+    "react": "18.3.1",
+    "compatibilityCatalogSha256": "7612f870d7eaa7b2c8eba4cb671462cd1ccbfc251529d519e65c49ed2aa0d0ae"
+  },
+  "hardening": {
+    "profile": "moderate-v1",
+    "seeds": {
+      "host": 110102,
+      "client": 170101
+    },
+    "propertyRenaming": false,
+    "sourceMaps": false
+  }
+}

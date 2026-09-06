@@ -1,0 +1,6 @@
+interface:
+  display_name: "Onclaw 数据接口"
+  short_description: "按领域发现接口、确认参数并草拟分析流程"
+  default_prompt: "使用 $onclaw-data 为这个分析需求选择接口并整理参数与流程。"
+policy:
+  allow_implicit_invocation: true

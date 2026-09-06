@@ -1,0 +1,988 @@
+{
+  "schemaVersion": 1,
+  "source": "fiagent_frontend/src/harness/host/createOnclawBusinessTools",
+  "interfaces": [
+    {
+      "name": "onclaw_get_limit_ladder_window",
+      "documentTitle": "涨跌停梯队窗口",
+      "documentFile": "涨跌停梯队窗口.md",
+      "group": "ladder",
+      "groupLabel": "梯队与涨跌停",
+      "description": "通过现有 limit-info snapshot Window/Runtime 接口读取一个梯队分组；Host 只缓存和组装响应，不重算梯队归属。",
+      "usage": "按基准日和观察区间读取一个指定梯队，可用于连板、反复、首板、炸板或跌停队列的后续特征计算。",
+      "cautions": [
+        "梯队归属以既有接口口径为准，不要根据观察日字段在模型侧重新划分。",
+        "参数对象是闭合的；未声明字段必须视为错误，不能静默转发。",
+        "返回值保持现有 Onclaw BaseResponse 及接口数据结构，空值、缺失字段和警告不得自行补零。"
+      ],
+      "parameters": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "base_date": {
+            "type": "string",
+            "description": "现有 snapshot 接口的 base_date，YYYY-MM-DD。"
+          },
+          "start_date": {
+            "type": "string",
+            "description": "现有 snapshot 接口的 start_date，YYYY-MM-DD。"
+          },
+          "end_date": {
+            "type": "string",
+            "description": "现有 snapshot 接口的 end_date，YYYY-MM-DD，不早于 start_date。"
+          },
+          "trading_dates": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "可选权威交易日期，YYYY-MM-DD，1..120 项；提供后可复用 Host 日期切片。"
+          },
+          "data_mode": {
+            "type": "string",
+            "enum": [
+              "settled",
+              "include_runtime"
+            ],
+            "description": "settled 只读 Window；include_runtime 额外调用现有 Runtime 接口。"
+          },
+          "known_runtime_revision": {
+            "type": "integer",
+            "description": "现有 Runtime 接口的非负 revision。"
+          },
+          "group": {
+            "type": "string",
+            "enum": [
+              "continue_board",
+              "rebound",
+              "first_board",
+              "failed_limit",
+              "limit_down"
+            ]
+          },
+          "stock_scope": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "可选现有接口股票范围，去重后最多 200 项。"
+          },
+          "limit_events": {
+            "type": "boolean"
+          },
+          "convertible": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "base_date",
+          "start_date",
+          "end_date",
+          "group"
+        ]
+      },
+      "outputSchema": {
+        "type": "object",
+        "additionalProperties": true
+      },
+      "timeoutMs": 60000
+    },
+    {
+      "name": "onclaw_get_performance_premium_window",
+      "documentTitle": "业绩溢价窗口",
+      "documentFile": "业绩溢价窗口.md",
+      "group": "performance",
+      "groupLabel": "业绩与公告",
+      "description": "调用现有 /financial-performance/premium-window，返回后端已经计算的公告 T+n 溢价；Host 不重算公告、交易日或价格。",
+      "usage": "围绕一个报告期和公告事件日读取业绩事件及 T+n 溢价窗口，适合构造业绩套利或公告效应特征。",
+      "cautions": [
+        "报告期、公告日和交易日是不同坐标；缺失价格或公告信息不能用零值代替。",
+        "参数对象是闭合的；未声明字段必须视为错误，不能静默转发。",
+        "返回值保持现有 Onclaw BaseResponse 及接口数据结构，空值、缺失字段和警告不得自行补零。"
+      ],
+      "parameters": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "report": {
+            "type": "string",
+            "description": "报告期，例如 2026-02。"
+          },
+          "event_date": {
+            "type": "string",
+            "description": "YYYY-MM-DD。"
+          },
+          "forecast_types": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "preview",
+                "express",
+                "notice"
+              ]
+            }
+          },
+          "performance_types": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "现有接口动态业务类型，最多 20 项。"
+          },
+          "horizons": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            },
+            "description": "1..21 项，每项为 0..20 的交易日 horizon。"
+          },
+          "max_events": {
+            "type": "integer",
+            "description": "1..300。"
+          }
+        },
+        "required": [
+          "report",
+          "event_date"
+        ]
+      },
+      "outputSchema": {
+        "type": "object",
+        "additionalProperties": true
+      },
+      "timeoutMs": 60000
+    },
+    {
+      "name": "onclaw_get_stock_market_window",
+      "documentTitle": "股票行情窗口",
+      "documentFile": "股票行情窗口.md",
+      "group": "market",
+      "groupLabel": "市场行情",
+      "description": "通过现有 market snapshot Window/Runtime 接口读取 1..200 只显式股票，不执行候选筛选。",
+      "usage": "对明确且有界的股票代码集合读取市场 Snapshot Window，并按需附加 Runtime 数据。",
+      "cautions": [
+        "明确 settled 与 runtime 口径；大规模行集应先进入特征处理而不是直接交给 LLM。",
+        "参数对象是闭合的；未声明字段必须视为错误，不能静默转发。",
+        "返回值保持现有 Onclaw BaseResponse 及接口数据结构，空值、缺失字段和警告不得自行补零。"
+      ],
+      "parameters": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "base_date": {
+            "type": "string",
+            "description": "现有 snapshot 接口的 base_date，YYYY-MM-DD。"
+          },
+          "start_date": {
+            "type": "string",
+            "description": "现有 snapshot 接口的 start_date，YYYY-MM-DD。"
+          },
+          "end_date": {
+            "type": "string",
+            "description": "现有 snapshot 接口的 end_date，YYYY-MM-DD，不早于 start_date。"
+          },
+          "trading_dates": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "可选权威交易日期，YYYY-MM-DD，1..120 项；提供后可复用 Host 日期切片。"
+          },
+          "data_mode": {
+            "type": "string",
+            "enum": [
+              "settled",
+              "include_runtime"
+            ],
+            "description": "settled 只读 Window；include_runtime 额外调用现有 Runtime 接口。"
+          },
+          "known_runtime_revision": {
+            "type": "integer",
+            "description": "现有 Runtime 接口的非负 revision。"
+          },
+          "stock_codes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "必填，规范化去重后 1..200 项。"
+          }
+        },
+        "required": [
+          "stock_codes",
+          "base_date",
+          "start_date",
+          "end_date"
+        ]
+      },
+      "outputSchema": {
+        "type": "object",
+        "additionalProperties": true
+      },
+      "timeoutMs": 60000
+    },
+    {
+      "name": "onclaw_get_performance_reports",
+      "documentTitle": "财报季度目录",
+      "documentFile": "财报季度目录.md",
+      "group": "performance",
+      "groupLabel": "业绩与公告",
+      "description": "读取现有财报季度目录。",
+      "usage": "先获取可用财报季度目录，为后续公告日期和公告明细查询提供规范 report 参数。",
+      "cautions": [
+        "报告期、公告日和交易日是不同坐标；缺失价格或公告信息不能用零值代替。",
+        "参数对象是闭合的；未声明字段必须视为错误，不能静默转发。",
+        "返回值保持现有 Onclaw BaseResponse 及接口数据结构，空值、缺失字段和警告不得自行补零。"
+      ],
+      "parameters": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {}
+      },
+      "outputSchema": {
+        "type": "object",
+        "additionalProperties": true
+      },
+      "timeoutMs": 60000
+    },
+    {
+      "name": "onclaw_get_performance_announcement_dates",
+      "documentTitle": "业绩公告日期",
+      "documentFile": "业绩公告日期.md",
+      "group": "performance",
+      "groupLabel": "业绩与公告",
+      "description": "读取指定财报季度的公告事件日期。",
+      "usage": "获取指定报告期存在公告事件的日期，用于选择后续公告或溢价分析坐标。",
+      "cautions": [
+        "报告期、公告日和交易日是不同坐标；缺失价格或公告信息不能用零值代替。",
+        "参数对象是闭合的；未声明字段必须视为错误，不能静默转发。",
+        "返回值保持现有 Onclaw BaseResponse 及接口数据结构，空值、缺失字段和警告不得自行补零。"
+      ],
+      "parameters": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "report": {
+            "type": "string",
+            "description": "财报季度，例如 2026-02。"
+          }
+        },
+        "required": [
+          "report"
+        ]
+      },
+      "outputSchema": {
+        "type": "object",
+        "additionalProperties": true
+      },
+      "timeoutMs": 60000
+    },
+    {
+      "name": "onclaw_get_performance_announcements",
+      "documentTitle": "业绩公告明细",
+      "documentFile": "业绩公告明细.md",
+      "group": "performance",
+      "groupLabel": "业绩与公告",
+      "description": "读取现有业绩公告记录，不重算事件日或业绩分类。",
+      "usage": "按报告期、事件日期和有限过滤条件读取公告事件明细。",
+      "cautions": [
+        "报告期、公告日和交易日是不同坐标；缺失价格或公告信息不能用零值代替。",
+        "参数对象是闭合的；未声明字段必须视为错误，不能静默转发。",
+        "返回值保持现有 Onclaw BaseResponse 及接口数据结构，空值、缺失字段和警告不得自行补零。"
+      ],
+      "parameters": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "report": {
+            "type": "string",
+            "description": "财报季度，例如 2026-02。"
+          },
+          "event_date": {
+            "type": "string",
+            "description": "YYYY-MM-DD 日期。"
+          },
+          "forecast_types": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "preview",
+                "express",
+                "notice"
+              ]
+            }
+          },
+          "performance_types": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "后端拥有的业绩类型，最多 20 项。"
+          }
+        },
+        "required": [
+          "report",
+          "event_date"
+        ]
+      },
+      "outputSchema": {
+        "type": "object",
+        "additionalProperties": true
+      },
+      "timeoutMs": 60000
+    },
+    {
+      "name": "onclaw_get_ladder_stock_context",
+      "documentTitle": "梯队股票上下文",
+      "documentFile": "梯队股票上下文.md",
+      "group": "ladder",
+      "groupLabel": "梯队与涨跌停",
+      "description": "读取连板页面现有的日期锚定股票弹窗上下文。",
+      "usage": "读取单只股票的梯队相关上下文，用于把候选标的与近期涨跌停行为关联。",
+      "cautions": [
+        "梯队归属以既有接口口径为准，不要根据观察日字段在模型侧重新划分。",
+        "参数对象是闭合的；未声明字段必须视为错误，不能静默转发。",
+        "返回值保持现有 Onclaw BaseResponse 及接口数据结构，空值、缺失字段和警告不得自行补零。"
+      ],
+      "parameters": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "ts_code": {
+            "type": "string",
+            "description": "股票代码，例如 600000.SH。"
+          },
+          "anchor_date": {
+            "type": "string",
+            "description": "YYYY-MM-DD 日期。"
+          },
+          "kline_limit": {
+            "type": "integer",
+            "description": "1..60，默认 60。"
+          },
+          "announcement_limit": {
+            "type": "integer",
+            "description": "0..20，默认 8。"
+          }
+        },
+        "required": [
+          "ts_code",
+          "anchor_date"
+        ]
+      },
+      "outputSchema": {
+        "type": "object",
+        "additionalProperties": true
+      },
+      "timeoutMs": 60000
+    },
+    {
+      "name": "onclaw_get_market_daily",
+      "documentTitle": "市场日频数据",
+      "documentFile": "市场日频数据.md",
+      "group": "market",
+      "groupLabel": "市场行情",
+      "description": "读取现有市场日频数据表。",
+      "usage": "读取指定日期范围或最近窗口的市场日频统计，适合市场情绪、量能和活跃度特征。",
+      "cautions": [
+        "明确 settled 与 runtime 口径；大规模行集应先进入特征处理而不是直接交给 LLM。",
+        "参数对象是闭合的；未声明字段必须视为错误，不能静默转发。",
+        "返回值保持现有 Onclaw BaseResponse 及接口数据结构，空值、缺失字段和警告不得自行补零。"
+      ],
+      "parameters": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "start_date": {
+            "type": "string",
+            "description": "YYYY-MM-DD 日期。"
+          },
+          "end_date": {
+            "type": "string",
+            "description": "YYYY-MM-DD 日期。"
+          },
+          "window_size": {
+            "type": "integer",
+            "description": "1..30。"
+          },
+          "fields": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "可选现有字段，最多 80 项。"
+          }
+        }
+      },
+      "outputSchema": {
+        "type": "object",
+        "additionalProperties": true
+      },
+      "timeoutMs": 60000
+    },
+    {
+      "name": "onclaw_get_market_monthly",
+      "documentTitle": "市场月频数据",
+      "documentFile": "市场月频数据.md",
+      "group": "market",
+      "groupLabel": "市场行情",
+      "description": "读取现有市场月频数据表。",
+      "usage": "读取月频行情，用于更长周期趋势或跨月比较。",
+      "cautions": [
+        "明确 settled 与 runtime 口径；大规模行集应先进入特征处理而不是直接交给 LLM。",
+        "参数对象是闭合的；未声明字段必须视为错误，不能静默转发。",
+        "返回值保持现有 Onclaw BaseResponse 及接口数据结构，空值、缺失字段和警告不得自行补零。"
+      ],
+      "parameters": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "start_month": {
+            "type": "string",
+            "description": "YYYY-MM-DD 日期。"
+          },
+          "end_month": {
+            "type": "string",
+            "description": "YYYY-MM-DD 日期。"
+          },
+          "window_size": {
+            "type": "integer",
+            "description": "1..12。"
+          },
+          "fields": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "可选现有字段，最多 80 项。"
+          }
+        }
+      },
+      "outputSchema": {
+        "type": "object",
+        "additionalProperties": true
+      },
+      "timeoutMs": 60000
+    },
+    {
+      "name": "onclaw_get_market_volume_trends",
+      "documentTitle": "市场成交趋势",
+      "documentFile": "市场成交趋势.md",
+      "group": "market",
+      "groupLabel": "市场行情",
+      "description": "读取现有市场成交趋势。",
+      "usage": "读取量价趋势数据，用于成交活跃度、放量和持续性特征。",
+      "cautions": [
+        "明确 settled 与 runtime 口径；大规模行集应先进入特征处理而不是直接交给 LLM。",
+        "参数对象是闭合的；未声明字段必须视为错误，不能静默转发。",
+        "返回值保持现有 Onclaw BaseResponse 及接口数据结构，空值、缺失字段和警告不得自行补零。"
+      ],
+      "parameters": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "trade_date": {
+            "type": "string",
+            "description": "YYYY-MM-DD 日期。"
+          }
+        }
+      },
+      "outputSchema": {
+        "type": "object",
+        "additionalProperties": true
+      },
+      "timeoutMs": 60000
+    },
+    {
+      "name": "onclaw_get_market_runtime",
+      "documentTitle": "市场实时运行态",
+      "documentFile": "市场实时运行态.md",
+      "group": "market",
+      "groupLabel": "市场行情",
+      "description": "读取后端已经生成的市场数据实时运行态，不触发外部同步。",
+      "usage": "读取尚未落定的实时行情状态，只能作为 runtime 证据使用。",
+      "cautions": [
+        "明确 settled 与 runtime 口径；大规模行集应先进入特征处理而不是直接交给 LLM。",
+        "参数对象是闭合的；未声明字段必须视为错误，不能静默转发。",
+        "返回值保持现有 Onclaw BaseResponse 及接口数据结构，空值、缺失字段和警告不得自行补零。"
+      ],
+      "parameters": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {}
+      },
+      "outputSchema": {
+        "type": "object",
+        "additionalProperties": true
+      },
+      "timeoutMs": 60000
+    },
+    {
+      "name": "onclaw_get_board_sentiment_window",
+      "documentTitle": "连板情绪窗口",
+      "documentFile": "连板情绪窗口.md",
+      "group": "market",
+      "groupLabel": "市场行情",
+      "description": "读取现有连板情绪走势窗口。",
+      "usage": "读取板块情绪窗口，用于判断候选所处市场环境和情绪阶段。",
+      "cautions": [
+        "明确 settled 与 runtime 口径；大规模行集应先进入特征处理而不是直接交给 LLM。",
+        "参数对象是闭合的；未声明字段必须视为错误，不能静默转发。",
+        "返回值保持现有 Onclaw BaseResponse 及接口数据结构，空值、缺失字段和警告不得自行补零。"
+      ],
+      "parameters": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "end_date": {
+            "type": "string",
+            "description": "YYYY-MM-DD 日期。"
+          },
+          "window_size": {
+            "type": "integer",
+            "description": "1..120，默认 30。"
+          }
+        }
+      },
+      "outputSchema": {
+        "type": "object",
+        "additionalProperties": true
+      },
+      "timeoutMs": 60000
+    },
+    {
+      "name": "onclaw_get_limit_info_dates",
+      "documentTitle": "涨跌停可用日期",
+      "documentFile": "涨跌停可用日期.md",
+      "group": "ladder",
+      "groupLabel": "梯队与涨跌停",
+      "description": "读取现有连板/涨跌停数据可用日期。",
+      "usage": "获取涨跌停 Snapshot 可用日期，为梯队 Window 选择合法日期范围。",
+      "cautions": [
+        "梯队归属以既有接口口径为准，不要根据观察日字段在模型侧重新划分。",
+        "参数对象是闭合的；未声明字段必须视为错误，不能静默转发。",
+        "返回值保持现有 Onclaw BaseResponse 及接口数据结构，空值、缺失字段和警告不得自行补零。"
+      ],
+      "parameters": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {}
+      },
+      "outputSchema": {
+        "type": "object",
+        "additionalProperties": true
+      },
+      "timeoutMs": 60000
+    },
+    {
+      "name": "onclaw_get_active_supervision",
+      "documentTitle": "当前有效监管",
+      "documentFile": "当前有效监管.md",
+      "group": "supervision",
+      "groupLabel": "监管",
+      "description": "读取当前有效监管信息。",
+      "usage": "读取当前活跃监管状态，用于候选标的风险过滤。",
+      "cautions": [
+        "区分当前状态、历史记录和监管线定义，不能把历史命中表述成当前仍处于监管。",
+        "参数对象是闭合的；未声明字段必须视为错误，不能静默转发。",
+        "返回值保持现有 Onclaw BaseResponse 及接口数据结构，空值、缺失字段和警告不得自行补零。"
+      ],
+      "parameters": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {}
+      },
+      "outputSchema": {
+        "type": "object",
+        "additionalProperties": true
+      },
+      "timeoutMs": 60000
+    },
+    {
+      "name": "onclaw_get_supervision_history",
+      "documentTitle": "历史监管记录",
+      "documentFile": "历史监管记录.md",
+      "group": "supervision",
+      "groupLabel": "监管",
+      "description": "分页读取历史监管信息。",
+      "usage": "读取股票历史监管事件，用于风险回溯而非当前状态判断。",
+      "cautions": [
+        "区分当前状态、历史记录和监管线定义，不能把历史命中表述成当前仍处于监管。",
+        "参数对象是闭合的；未声明字段必须视为错误，不能静默转发。",
+        "返回值保持现有 Onclaw BaseResponse 及接口数据结构，空值、缺失字段和警告不得自行补零。"
+      ],
+      "parameters": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "end_date": {
+            "type": "string",
+            "description": "YYYY-MM-DD 日期。"
+          },
+          "offset": {
+            "type": "integer",
+            "description": "0..1000000。"
+          },
+          "limit": {
+            "type": "integer",
+            "description": "1..100，默认 10。"
+          }
+        }
+      },
+      "outputSchema": {
+        "type": "object",
+        "additionalProperties": true
+      },
+      "timeoutMs": 60000
+    },
+    {
+      "name": "onclaw_get_supervision_lines",
+      "documentTitle": "监管价格线",
+      "documentFile": "监管价格线.md",
+      "group": "supervision",
+      "groupLabel": "监管",
+      "description": "读取指定日期的监管价格线。",
+      "usage": "读取监管线定义或当前监管线集合，为监管规则解释提供依据。",
+      "cautions": [
+        "区分当前状态、历史记录和监管线定义，不能把历史命中表述成当前仍处于监管。",
+        "参数对象是闭合的；未声明字段必须视为错误，不能静默转发。",
+        "返回值保持现有 Onclaw BaseResponse 及接口数据结构，空值、缺失字段和警告不得自行补零。"
+      ],
+      "parameters": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "target_date": {
+            "type": "string",
+            "description": "YYYY-MM-DD 日期。"
+          }
+        }
+      },
+      "outputSchema": {
+        "type": "object",
+        "additionalProperties": true
+      },
+      "timeoutMs": 60000
+    },
+    {
+      "name": "onclaw_get_supervision_line_history",
+      "documentTitle": "监管价格线历史",
+      "documentFile": "监管价格线历史.md",
+      "group": "supervision",
+      "groupLabel": "监管",
+      "description": "分页读取监管价格线历史。",
+      "usage": "读取指定监管线的历史变化，避免用当前阈值解释全部历史。",
+      "cautions": [
+        "区分当前状态、历史记录和监管线定义，不能把历史命中表述成当前仍处于监管。",
+        "参数对象是闭合的；未声明字段必须视为错误，不能静默转发。",
+        "返回值保持现有 Onclaw BaseResponse 及接口数据结构，空值、缺失字段和警告不得自行补零。"
+      ],
+      "parameters": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "end_date": {
+            "type": "string",
+            "description": "YYYY-MM-DD 日期。"
+          },
+          "offset": {
+            "type": "integer",
+            "description": "0..1000000。"
+          },
+          "limit": {
+            "type": "integer",
+            "description": "1..100，默认 10。"
+          }
+        }
+      },
+      "outputSchema": {
+        "type": "object",
+        "additionalProperties": true
+      },
+      "timeoutMs": 60000
+    },
+    {
+      "name": "onclaw_get_market_timeline",
+      "documentTitle": "市场事件时间线",
+      "documentFile": "市场事件时间线.md",
+      "group": "market",
+      "groupLabel": "市场行情",
+      "description": "按日期范围读取题材、资讯、业绩异动和监管生命周期四类统一市场事件；业绩与监管条目包含有界业务摘要和 T 至 T+3 轻量溢价登记。",
+      "usage": "按一种或多种来源读取市场时间线，用于把题材、资讯、业绩异动、监管事件及其已成熟溢价观察按事件交易日对齐。",
+      "cautions": [
+        "省略 source_type/source_types 时默认返回四类来源；多选使用 source_types，且不能与兼容参数 source_type 同时提供。",
+        "业绩时间线只纳入 T 日绝对涨跌幅严格大于 8%，或明确涨停、跌停、炸板的股票；不要在模型侧改变该入选口径。",
+        "daily_pct_chg 是观察日自身涨跌幅，premium_pct 是相对 T 日收盘的累计溢价；二者不得混用。",
+        "参数对象是闭合的；未声明字段必须视为错误，不能静默转发。",
+        "返回值保持现有 Onclaw BaseResponse 及接口数据结构，空值、缺失字段和警告不得自行补零。"
+      ],
+      "parameters": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "start_date": {
+            "type": "string",
+            "description": "YYYY-MM-DD 日期。"
+          },
+          "end_date": {
+            "type": "string",
+            "description": "YYYY-MM-DD 日期。"
+          },
+          "source_type": {
+            "type": "string",
+            "enum": [
+              "topic",
+              "article",
+              "performance",
+              "supervision"
+            ],
+            "description": "兼容单选来源；不能与 source_types 同时提供。"
+          },
+          "source_types": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "topic",
+                "article",
+                "performance",
+                "supervision"
+              ]
+            },
+            "description": "多选来源，去重后最多 4 项；不能与 source_type 同时提供。省略两个来源参数时默认全选四类。"
+          },
+          "topic_id": {
+            "type": "string",
+            "description": "可选题材 ID，最多 120 字符。"
+          },
+          "limit": {
+            "type": "integer",
+            "description": "1..1000，默认 500。"
+          }
+        },
+        "required": [
+          "start_date",
+          "end_date"
+        ]
+      },
+      "outputSchema": {
+        "type": "object",
+        "additionalProperties": true
+      },
+      "timeoutMs": 60000
+    },
+    {
+      "name": "onclaw_get_topic_names_by_stocks",
+      "documentTitle": "股票关联题材",
+      "documentFile": "股票关联题材.md",
+      "group": "topic",
+      "groupLabel": "题材",
+      "description": "批量反查股票对应的题材名称。",
+      "usage": "由股票代码集合反查关联题材名称，适合从候选标的发现题材线索。",
+      "cautions": [
+        "题材搜索结果只是候选集合，应结合日期、成分股和市场活跃度继续筛选。",
+        "参数对象是闭合的；未声明字段必须视为错误，不能静默转发。",
+        "返回值保持现有 Onclaw BaseResponse 及接口数据结构，空值、缺失字段和警告不得自行补零。"
+      ],
+      "parameters": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "stocks": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "股票代码，去重后 1..200 项。"
+          }
+        },
+        "required": [
+          "stocks"
+        ]
+      },
+      "outputSchema": {
+        "type": "object",
+        "additionalProperties": true
+      },
+      "timeoutMs": 60000
+    },
+    {
+      "name": "onclaw_get_topic_market_info",
+      "documentTitle": "题材股票行情",
+      "documentFile": "题材股票行情.md",
+      "group": "topic",
+      "groupLabel": "题材",
+      "description": "批量读取题材研究所需的现有股票行情字段。",
+      "usage": "读取指定题材的市场信息和股票集合，用于题材内候选扩展。",
+      "cautions": [
+        "题材搜索结果只是候选集合，应结合日期、成分股和市场活跃度继续筛选。",
+        "参数对象是闭合的；未声明字段必须视为错误，不能静默转发。",
+        "返回值保持现有 Onclaw BaseResponse 及接口数据结构，空值、缺失字段和警告不得自行补零。"
+      ],
+      "parameters": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "codes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "股票代码，去重后 1..200 项。"
+          },
+          "fields": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "可选现有行情字段，最多 80 项。"
+          }
+        },
+        "required": [
+          "codes"
+        ]
+      },
+      "outputSchema": {
+        "type": "object",
+        "additionalProperties": true
+      },
+      "timeoutMs": 60000
+    },
+    {
+      "name": "onclaw_search_topics",
+      "documentTitle": "题材搜索",
+      "documentFile": "题材搜索.md",
+      "group": "topic",
+      "groupLabel": "题材",
+      "description": "按关键词、股票或后端默认近期窗口搜索题材。",
+      "usage": "按关键词搜索题材候选，适合处理新闻、公告或美股异动中提取的关键词。",
+      "cautions": [
+        "题材搜索结果只是候选集合，应结合日期、成分股和市场活跃度继续筛选。",
+        "参数对象是闭合的；未声明字段必须视为错误，不能静默转发。",
+        "返回值保持现有 Onclaw BaseResponse 及接口数据结构，空值、缺失字段和警告不得自行补零。"
+      ],
+      "parameters": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "keyword": {
+            "type": "string",
+            "description": "可选关键词，最多 100 字符。"
+          },
+          "stock": {
+            "type": "string",
+            "description": "可选股票代码或名称，最多 40 字符。"
+          },
+          "skip": {
+            "type": "integer",
+            "description": "0..1000000。"
+          },
+          "limit": {
+            "type": "integer",
+            "description": "1..100，默认 20。"
+          }
+        }
+      },
+      "outputSchema": {
+        "type": "object",
+        "additionalProperties": true
+      },
+      "timeoutMs": 60000
+    },
+    {
+      "name": "onclaw_get_topic_info",
+      "documentTitle": "题材详情",
+      "documentFile": "题材详情.md",
+      "group": "topic",
+      "groupLabel": "题材",
+      "description": "按稳定 topic_id 读取现有题材详情。",
+      "usage": "读取单个题材的详细说明，用于确认题材语义和有效性。",
+      "cautions": [
+        "题材搜索结果只是候选集合，应结合日期、成分股和市场活跃度继续筛选。",
+        "参数对象是闭合的；未声明字段必须视为错误，不能静默转发。",
+        "返回值保持现有 Onclaw BaseResponse 及接口数据结构，空值、缺失字段和警告不得自行补零。"
+      ],
+      "parameters": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "topic_id": {
+            "type": "string",
+            "description": "字母、数字、下划线或连字符，最多 120 字符。"
+          }
+        },
+        "required": [
+          "topic_id"
+        ]
+      },
+      "outputSchema": {
+        "type": "object",
+        "additionalProperties": true
+      },
+      "timeoutMs": 60000
+    },
+    {
+      "name": "onclaw_get_us_abnormal_movement_dates",
+      "documentTitle": "美股异动可用日期",
+      "documentFile": "美股异动可用日期.md",
+      "group": "us-market",
+      "groupLabel": "美股异动",
+      "description": "读取美股异动可用交易日。",
+      "usage": "获取美股异动数据的可用日期，避免直接请求不存在的交易日。",
+      "cautions": [
+        "异动描述用于提取线索，不等同于对 A 股题材或标的的确定性因果结论。",
+        "参数对象是闭合的；未声明字段必须视为错误，不能静默转发。",
+        "返回值保持现有 Onclaw BaseResponse 及接口数据结构，空值、缺失字段和警告不得自行补零。"
+      ],
+      "parameters": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "description": "1..365，默认 30。"
+          }
+        }
+      },
+      "outputSchema": {
+        "type": "object",
+        "additionalProperties": true
+      },
+      "timeoutMs": 60000
+    },
+    {
+      "name": "onclaw_get_us_abnormal_movements",
+      "documentTitle": "美股异动明细",
+      "documentFile": "美股异动明细.md",
+      "group": "us-market",
+      "groupLabel": "美股异动",
+      "description": "按交易日读取现有美股异动明细。",
+      "usage": "读取指定日期的美股异动明细，用于后续关键词提取和跨市场线索映射。",
+      "cautions": [
+        "异动描述用于提取线索，不等同于对 A 股题材或标的的确定性因果结论。",
+        "参数对象是闭合的；未声明字段必须视为错误，不能静默转发。",
+        "返回值保持现有 Onclaw BaseResponse 及接口数据结构，空值、缺失字段和警告不得自行补零。"
+      ],
+      "parameters": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "trade_date": {
+            "type": "string",
+            "description": "YYYY-MM-DD 日期。"
+          }
+        },
+        "required": [
+          "trade_date"
+        ]
+      },
+      "outputSchema": {
+        "type": "object",
+        "additionalProperties": true
+      },
+      "timeoutMs": 60000
+    }
+  ]
+}

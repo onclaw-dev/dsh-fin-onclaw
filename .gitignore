@@ -63,13 +63,9 @@ web_modules/
 # Output of 'npm pack'
 *.tgz
 
-# Parent-exported runtime closure and local release evidence
-lib/
-assets/
-skills/
-native/
-provenance.json
-checksums.sha256
+# The package runtime closure (lib/assets/skills/native plus provenance and
+# checksums) is intentionally tracked so immutable GitHub refs are installable.
+# Only local staging, evidence, profiles, and packed tarballs stay ignored.
 .release-staging/
 release-evidence/
 .smoke-dsh-home/

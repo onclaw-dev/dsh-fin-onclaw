@@ -1,6 +1,6 @@
 {
   "name": "dsh-fin-onclaw",
-  "version": "0.1.1-rc.2.plugin.1",
+  "version": "0.2.0",
   "description": "Onclaw commercial workstation plugin for DeepSeek Harness",
   "type": "module",
   "main": "lib/index.js",
@@ -13,6 +13,7 @@
     "lib",
     "assets",
     "native",
+    "patch",
     "skills/onclaw-data/SKILL.md",
     "skills/onclaw-data/agents",
     "skills/onclaw-data/references",
@@ -30,7 +31,10 @@
     "build:release:dev": "node scripts/build.mjs release --allow-dirty",
     "verify": "node scripts/verify.mjs",
     "verify:pack": "node scripts/verify.mjs --pack",
-    "pack:rc2": "npm run build:release && npm run verify:pack && npm pack",
+    "verify:compatibility": "node scripts/validate-compatibility.mjs",
+    "verify:matrix": "node scripts/verify-compatibility-matrix.mjs",
+    "verify:matrix:install": "node scripts/verify-compatibility-matrix.mjs --install",
+    "pack:release": "npm run build:release && npm run verify:pack && npm pack",
     "version:next": "node scripts/version.mjs",
     "release:prepare": "node scripts/prepare-release.mjs",
     "prepack": "node scripts/verify.mjs --pack"
@@ -44,11 +48,9 @@
     },
     "client": {
       "inject": [
-        "@deepseek-ai/dsh-client-runtime",
-        "@deepseek-ai/dsh-client-ui-slots",
         "@deepseek-ai/dsh-client-ui-sidebar",
-        "@deepseek-ai/dsh-client-ui-settings",
         "@deepseek-ai/dsh-client-ui-conversation",
+        "@deepseek-ai/dsh-client-ui-settings",
         "dsh-better-sidebar"
       ],
       "platform": "web"
@@ -61,19 +63,15 @@
     "repository": "https://github.com/deepseek-ai/DeepSeek-Harness"
   },
   "peerDependencies": {
-    "@deepseek-ai/dsh-client-runtime": "0.1.1-rc.2",
-    "@deepseek-ai/dsh-client-ui-conversation": "0.1.1-rc.2",
-    "@deepseek-ai/dsh-client-ui-settings": "0.1.1-rc.2",
-    "@deepseek-ai/dsh-client-ui-sidebar": "0.1.1-rc.2",
-    "@deepseek-ai/dsh-client-ui-slots": "0.1.1-rc.2",
-    "@deepseek-ai/dsh-credentials": "0.1.1-rc.2",
-    "@deepseek-ai/dsh-settings": "0.1.1-rc.2",
-    "@deepseek-ai/dsh-skill": "0.1.1-rc.2",
-    "@deepseek-ai/dsh-tools": "0.1.1-rc.2",
-    "@deepseek-ai/schemastery": "3.18.1",
-    "dsh-better-sidebar": "0.17.1",
-    "react": "18.3.1",
-    "react-dom": "18.3.1"
+    "@deepseek-ai/schemastery": "3.18.1 || 3.18.2",
+    "dsh-better-sidebar": "0.13.1 || 0.17.1 || 0.18.0-alpha.0 || 0.18.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "peerDependenciesMeta": {
+    "dsh-better-sidebar": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "@deepseek-ai/dsh-agent": "0.1.1-rc.2",
@@ -105,7 +103,7 @@
   },
   "publishConfig": {
     "access": "public",
-    "tag": "rc2"
+    "tag": "latest"
   },
   "license": "SEE LICENSE IN LICENSE"
 }

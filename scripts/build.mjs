@@ -21,6 +21,7 @@ const baseline = {
 }
 const seeds = { host: 110102, client: 170101 }
 const packageManifest = JSON.parse(await readFile(path.join(childRoot, 'package.json'), 'utf8'))
+const compatibilityBytes = await readFile(path.join(childRoot, 'patch/compatibility.json'))
 assertBaseline(packageManifest)
 
 const parentRevision = git(parentRoot, ['rev-parse', 'HEAD'])
@@ -83,6 +84,7 @@ const provenance = {
     betterSidebar: '0.17.1',
     schemastery: '3.18.1',
     react: '18.3.1',
+    compatibilityCatalogSha256: sha256(compatibilityBytes),
   },
   hardening: mode === 'release'
     ? { profile: 'moderate-v1', seeds, propertyRenaming: false, sourceMaps: false }
@@ -100,6 +102,7 @@ function assertBaseline(manifest) {
   }
   const exact = {
     '@deepseek-ai/dsh-client-runtime': baseline.version,
+    '@deepseek-ai/dsh-client-ui-conversation': baseline.version,
     '@deepseek-ai/dsh-client-ui-settings': baseline.version,
     '@deepseek-ai/dsh-client-ui-sidebar': baseline.version,
     '@deepseek-ai/dsh-client-ui-slots': baseline.version,
@@ -113,7 +116,19 @@ function assertBaseline(manifest) {
     'react-dom': '18.3.1',
   }
   for (const [name, version] of Object.entries(exact)) {
-    if (manifest.peerDependencies[name] !== version) throw new Error(`${name} must equal ${version}`)
+    if (manifest.devDependencies[name] !== version) throw new Error(`${name} development baseline must equal ${version}`)
+  }
+  const expectedPeers = {
+    '@deepseek-ai/schemastery': '3.18.1 || 3.18.2',
+    'dsh-better-sidebar': '0.13.1 || 0.17.1 || 0.18.0-alpha.0 || 0.18.0',
+    react: '^18.2.0',
+    'react-dom': '^18.2.0',
+  }
+  if (JSON.stringify(manifest.peerDependencies) !== JSON.stringify(expectedPeers)) {
+    throw new Error('published peer surface differs from the reviewed compatibility contract')
+  }
+  if (manifest.peerDependenciesMeta?.['dsh-better-sidebar']?.optional !== true) {
+    throw new Error('dsh-better-sidebar must remain an optional host-plugin peer')
   }
   if (manifest.dependencies && Object.keys(manifest.dependencies).length) {
     throw new Error('bundled libraries must not remain in runtime dependencies')
@@ -160,6 +175,7 @@ async function writeChecksums() {
     'skills/onclaw-data/agents',
     'skills/onclaw-data/references',
     'native',
+    'patch',
     'dsh.plugin.json',
     'cordis.patch.yml',
     'LICENSE',

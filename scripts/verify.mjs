@@ -4,6 +4,7 @@ import { access, readFile } from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 import vm from 'node:vm'
+import { validateCompatibility } from './validate-compatibility.mjs'
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const manifest = JSON.parse(await readFile(path.join(root, 'package.json'), 'utf8'))
@@ -14,25 +15,33 @@ const expectedBaseline = {
   commit: 'b150a551b8d465e31e418e1b2eaf5e79bbb7d28e',
   repository: 'https://github.com/deepseek-ai/DeepSeek-Harness',
 }
+const compatibility = await validateCompatibility(root)
 
 assert.equal(manifest.name, 'dsh-fin-onclaw')
-assert.equal(manifest.version, '0.1.1-rc.2.plugin.1')
+assert.equal(manifest.version, '0.2.0')
+assert.equal(manifest.publishConfig.tag, 'latest')
 assert.deepEqual(manifest.deepseekHarness, expectedBaseline)
 assert.deepEqual(provenance.deepseekHarness, expectedBaseline)
 assert.equal(manifest.engines.node, '^22.19.0 || >=24.0.0')
-assert.equal(manifest.peerDependencies['dsh-better-sidebar'], '0.17.1')
-assert.equal(manifest.peerDependencies['@deepseek-ai/schemastery'], '3.18.1')
-assert.equal(manifest.peerDependencies.react, '18.3.1')
-assert.equal(manifest.peerDependencies['react-dom'], '18.3.1')
+assert.equal(manifest.peerDependencies['dsh-better-sidebar'], '0.13.1 || 0.17.1 || 0.18.0-alpha.0 || 0.18.0')
+assert.equal(manifest.peerDependenciesMeta['dsh-better-sidebar'].optional, true)
+assert.equal(manifest.peerDependencies['@deepseek-ai/schemastery'], '3.18.1 || 3.18.2')
+assert.equal(manifest.peerDependencies.react, '^18.2.0')
+assert.equal(manifest.peerDependencies['react-dom'], '^18.2.0')
 assert.equal(manifest.dependencies, undefined)
-for (const [name, version] of Object.entries(manifest.peerDependencies)) {
+for (const name of Object.keys(manifest.peerDependencies)) {
+  assert.equal(name.startsWith('@deepseek-ai/dsh-'), false, `${name} must be a development-only Harness baseline dependency`)
+}
+for (const [name, version] of Object.entries(manifest.devDependencies)) {
   if (name.startsWith('@deepseek-ai/dsh-')) assert.equal(version, '0.1.1-rc.2', name)
 }
+assert.deepEqual(manifest.dsh.client.inject, compatibility.providerInjection)
 for (const required of [
   'lib/index.js', 'lib/client.js', 'assets/wechat_qr.jpg',
   'skills/onclaw-data/SKILL.md',
   'dsh.plugin.json', 'cordis.patch.yml', 'README.md', 'AGENTS.md',
   'DISTRIBUTION.md', 'provenance.json', 'checksums.sha256',
+  'patch/compatibility.json', 'patch/compatibility.schema.json',
 ]) await access(path.join(root, required))
 
 const [hostText, clientText, cordis, plugin] = await Promise.all([
@@ -83,7 +92,7 @@ if (process.argv.includes('--pack')) {
   const entries = pack.files.map((file) => file.path.replaceAll('\\', '/'))
   const forbidden = /(?:^|\/)(?:src|test|tests|node_modules|\.git|\.cache|dist-web|dist-electron)(?:\/|$)|\.map$|(?:^|\/)\.env(?:\.|$)|(?:^|\/)scripts\//
   for (const entry of entries) assert.doesNotMatch(entry, forbidden, entry)
-  const allowedRoots = new Set(['package.json', 'README.md', 'AGENTS.md', 'DISTRIBUTION.md', 'LICENSE', 'dsh.plugin.json', 'cordis.patch.yml', 'provenance.json', 'checksums.sha256', 'lib', 'assets', 'native', 'skills'])
+  const allowedRoots = new Set(['package.json', 'README.md', 'AGENTS.md', 'DISTRIBUTION.md', 'LICENSE', 'dsh.plugin.json', 'cordis.patch.yml', 'provenance.json', 'checksums.sha256', 'lib', 'assets', 'native', 'skills', 'patch'])
   for (const entry of entries) assert.ok(allowedRoots.has(entry.split('/')[0]), `not allowlisted: ${entry}`)
   const checksums = (await readFile(path.join(root, 'checksums.sha256'), 'utf8'))
     .split(/\r?\n/)

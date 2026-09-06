@@ -1,0 +1,1553 @@
+{
+  "schemaVersion": 1,
+  "origin": "https://onclaw.cc",
+  "results": [
+    {
+      "name": "onclaw_get_limit_ladder_window",
+      "request": {
+        "method": "POST",
+        "path": "/limit_info/snapshot/window",
+        "params": {},
+        "data": {
+          "base_date": "2026-08-27",
+          "start_date": "2026-08-26",
+          "end_date": "2026-08-27",
+          "group": "continue_board",
+          "stock_scope": [],
+          "limit_events": false,
+          "convertible": false,
+          "cursor": 0,
+          "size": 2
+        }
+      },
+      "response": {
+        "status": 403,
+        "contentType": "application/json",
+        "contentEncoding": null,
+        "contentLength": "30",
+        "shape": {
+          "type": "object",
+          "properties": {
+            "detail": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "onclaw_get_performance_premium_window",
+      "request": {
+        "method": "GET",
+        "path": "/financial-performance/premium-window",
+        "params": {
+          "report": "2026-02",
+          "event_date": "2026-08-27",
+          "forecast_types": "",
+          "performance_types": "",
+          "horizons": "1",
+          "max_events": 1
+        },
+        "data": null
+      },
+      "response": {
+        "status": 200,
+        "contentType": "application/json",
+        "contentEncoding": null,
+        "contentLength": "938",
+        "shape": {
+          "type": "object",
+          "properties": {
+            "code": {
+              "type": "integer"
+            },
+            "msg": {
+              "type": "string"
+            },
+            "data": {
+              "type": "object",
+              "properties": {
+                "report": {
+                  "type": "string"
+                },
+                "event_date": {
+                  "type": "string"
+                },
+                "horizons": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer"
+                  }
+                },
+                "trading_dates": {
+                  "type": "array",
+                  "items": {}
+                },
+                "events": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "announcement": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "integer"
+                          },
+                          "source_seq": {
+                            "type": "string"
+                          },
+                          "stock_code": {
+                            "type": "string"
+                          },
+                          "stock_name": {
+                            "type": "string"
+                          },
+                          "report_year": {
+                            "type": "integer"
+                          },
+                          "report_quarter": {
+                            "type": "integer"
+                          },
+                          "period_end": {
+                            "type": "string"
+                          },
+                          "announce_date": {
+                            "type": "string"
+                          },
+                          "event_date": {
+                            "type": "string"
+                          },
+                          "forecast_type": {
+                            "type": "string"
+                          },
+                          "performance_type": {
+                            "type": "string"
+                          },
+                          "forecast_subtype": {
+                            "type": "null"
+                          },
+                          "data_description": {
+                            "type": "string"
+                          },
+                          "announcement_pdf_url": {
+                            "type": "null"
+                          }
+                        }
+                      },
+                      "ts_code": {
+                        "type": "string"
+                      },
+                      "base_close": {
+                        "type": "null"
+                      },
+                      "premium": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "horizon": {
+                              "type": "integer"
+                            },
+                            "trade_date": {
+                              "type": "null"
+                            },
+                            "close": {
+                              "type": "null"
+                            },
+                            "premium_pct": {
+                              "type": "null"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "coverage": {
+                  "type": "object",
+                  "properties": {
+                    "announcement_count": {
+                      "type": "integer"
+                    },
+                    "priced_count": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "onclaw_get_stock_market_window",
+      "request": {
+        "method": "POST",
+        "path": "/market/snapshot/window",
+        "params": {},
+        "data": {
+          "base_date": "2026-08-27",
+          "start_date": "2026-08-26",
+          "end_date": "2026-08-27",
+          "group": "default",
+          "stock_scope": [
+            "000001.SZ"
+          ],
+          "cursor": 0,
+          "size": 2
+        }
+      },
+      "response": {
+        "status": 403,
+        "contentType": "application/json",
+        "contentEncoding": null,
+        "contentLength": "30",
+        "shape": {
+          "type": "object",
+          "properties": {
+            "detail": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "onclaw_get_performance_reports",
+      "request": {
+        "method": "GET",
+        "path": "/financial-performance/reports",
+        "params": {},
+        "data": null
+      },
+      "response": {
+        "status": 200,
+        "contentType": "application/json",
+        "contentEncoding": null,
+        "contentLength": "934",
+        "shape": {
+          "type": "object",
+          "properties": {
+            "code": {
+              "type": "integer"
+            },
+            "msg": {
+              "type": "string"
+            },
+            "data": {
+              "type": "object",
+              "properties": {
+                "default_report": {
+                  "type": "string"
+                },
+                "retention_limit": {
+                  "type": "integer"
+                },
+                "items": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "value": {
+                        "type": "string"
+                      },
+                      "label": {
+                        "type": "string"
+                      },
+                      "report_year": {
+                        "type": "integer"
+                      },
+                      "report_quarter": {
+                        "type": "integer"
+                      },
+                      "period_end": {
+                        "type": "string"
+                      },
+                      "row_count": {
+                        "type": "integer"
+                      },
+                      "announce_date_min": {
+                        "type": "string"
+                      },
+                      "announce_date_max": {
+                        "type": "string"
+                      },
+                      "is_latest": {
+                        "type": "boolean"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "onclaw_get_performance_announcement_dates",
+      "request": {
+        "method": "GET",
+        "path": "/financial-performance/announcement-dates",
+        "params": {
+          "report": "2026-02"
+        },
+        "data": null
+      },
+      "response": {
+        "status": 200,
+        "contentType": "application/json",
+        "contentEncoding": "gzip",
+        "contentLength": "427",
+        "shape": {
+          "type": "object",
+          "properties": {
+            "code": {
+              "type": "integer"
+            },
+            "msg": {
+              "type": "string"
+            },
+            "data": {
+              "type": "object",
+              "properties": {
+                "report": {
+                  "type": "string"
+                },
+                "default_event_date": {
+                  "type": "string"
+                },
+                "default_announcement_date": {
+                  "type": "string"
+                },
+                "items": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "date": {
+                        "type": "string"
+                      },
+                      "count": {
+                        "type": "integer"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "onclaw_get_performance_announcements",
+      "request": {
+        "method": "GET",
+        "path": "/financial-performance/announcements",
+        "params": {
+          "report": "2026-02",
+          "event_date": "2026-08-27"
+        },
+        "data": null
+      },
+      "response": {
+        "status": 200,
+        "contentType": "application/json",
+        "contentEncoding": "gzip",
+        "contentLength": "71446",
+        "shape": {
+          "type": "object",
+          "properties": {
+            "code": {
+              "type": "integer"
+            },
+            "msg": {
+              "type": "string"
+            },
+            "data": {
+              "type": "object",
+              "properties": {
+                "report": {
+                  "type": "string"
+                },
+                "announcement_date": {
+                  "type": "null"
+                },
+                "event_date": {
+                  "type": "string"
+                },
+                "table": {
+                  "type": "object",
+                  "properties": {
+                    "columns": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "rows": {
+                      "type": "array",
+                      "items": {
+                        "type": "array",
+                        "items": {
+                          "type": [
+                            "integer",
+                            "null",
+                            "string"
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "onclaw_get_ladder_stock_context",
+      "request": {
+        "method": "POST",
+        "path": "/limit_info/stock-popup/context",
+        "params": {},
+        "data": {
+          "ts_code": "000001.SZ",
+          "anchor_date": "2026-08-27",
+          "kline_limit": 5,
+          "announcement_limit": 5
+        }
+      },
+      "response": {
+        "status": 403,
+        "contentType": "application/json",
+        "contentEncoding": null,
+        "contentLength": "30",
+        "shape": {
+          "type": "object",
+          "properties": {
+            "detail": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "onclaw_get_market_daily",
+      "request": {
+        "method": "GET",
+        "path": "/market-data/daily",
+        "params": {
+          "window_size": 2
+        },
+        "data": null
+      },
+      "response": {
+        "status": 200,
+        "contentType": "application/json",
+        "contentEncoding": "gzip",
+        "contentLength": "1623",
+        "shape": {
+          "type": "object",
+          "properties": {
+            "code": {
+              "type": "integer"
+            },
+            "msg": {
+              "type": "string"
+            },
+            "data": {
+              "type": "object",
+              "properties": {
+                "columns": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "rows": {
+                  "type": "array",
+                  "items": {
+                    "type": [
+                      "array"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "onclaw_get_market_monthly",
+      "request": {
+        "method": "GET",
+        "path": "/market-data/monthly",
+        "params": {
+          "window_size": 2
+        },
+        "data": null
+      },
+      "response": {
+        "status": 200,
+        "contentType": "application/json",
+        "contentEncoding": null,
+        "contentLength": "216",
+        "shape": {
+          "type": "object",
+          "properties": {
+            "code": {
+              "type": "integer"
+            },
+            "msg": {
+              "type": "string"
+            },
+            "data": {
+              "type": "object",
+              "properties": {
+                "columns": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "rows": {
+                  "type": "array",
+                  "items": {
+                    "type": [
+                      "array"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "onclaw_get_market_volume_trends",
+      "request": {
+        "method": "GET",
+        "path": "/market-data/volume-trends",
+        "params": {},
+        "data": null
+      },
+      "response": {
+        "status": 200,
+        "contentType": "application/json",
+        "contentEncoding": "gzip",
+        "contentLength": "6297",
+        "shape": {
+          "type": "object",
+          "properties": {
+            "code": {
+              "type": "integer"
+            },
+            "msg": {
+              "type": "string"
+            },
+            "data": {
+              "type": "object",
+              "properties": {
+                "trade_date": {
+                  "type": "string"
+                },
+                "source": {
+                  "type": "string"
+                },
+                "source_update_time": {
+                  "type": "string"
+                },
+                "final_minute_time": {
+                  "type": "string"
+                },
+                "final_volume": {
+                  "type": "integer"
+                },
+                "final_pre_volume": {
+                  "type": "integer"
+                },
+                "final_predict_volume": {
+                  "type": "integer"
+                },
+                "final_turnover_change": {
+                  "type": "integer"
+                },
+                "final_percent": {
+                  "type": "null"
+                },
+                "final_tips": {
+                  "type": "string"
+                },
+                "final_tag1": {
+                  "type": "string"
+                },
+                "final_tag2": {
+                  "type": "string"
+                },
+                "point_count": {
+                  "type": "integer"
+                },
+                "volume_points": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "time": {
+                        "type": "string"
+                      },
+                      "turnover": {
+                        "type": "integer"
+                      },
+                      "timestamp": {
+                        "type": "integer"
+                      },
+                      "turnover_pre": {
+                        "type": "integer"
+                      },
+                      "turnover_change": {
+                        "type": "integer"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "onclaw_get_market_runtime",
+      "request": {
+        "method": "GET",
+        "path": "/market-data/runtime",
+        "params": {},
+        "data": null
+      },
+      "response": {
+        "status": 200,
+        "contentType": "application/json",
+        "contentEncoding": "gzip",
+        "contentLength": "7568",
+        "shape": {
+          "type": "object",
+          "properties": {
+            "code": {
+              "type": "integer"
+            },
+            "msg": {
+              "type": "string"
+            },
+            "data": {
+              "type": "object",
+              "properties": {
+                "mode": {
+                  "type": "string"
+                },
+                "market_date": {
+                  "type": "string"
+                },
+                "market_time": {
+                  "type": "string"
+                },
+                "recommended_refetch_ms": {
+                  "type": "integer"
+                },
+                "daily": {
+                  "type": "object",
+                  "properties": {
+                    "trade_date": {
+                      "type": "string"
+                    },
+                    "limit_up": {
+                      "type": "integer"
+                    },
+                    "limit_down": {
+                      "type": "integer"
+                    },
+                    "real_limit_up": {
+                      "type": "null"
+                    },
+                    "real_limit_down": {
+                      "type": "null"
+                    },
+                    "st_limit_up": {
+                      "type": "null"
+                    },
+                    "st_limit_down": {
+                      "type": "null"
+                    },
+                    "up_total": {
+                      "type": "integer"
+                    },
+                    "down_total": {
+                      "type": "integer"
+                    },
+                    "flat_total": {
+                      "type": "integer"
+                    },
+                    "suspend_total": {
+                      "type": "integer"
+                    },
+                    "distribution_update_time": {
+                      "type": "string"
+                    },
+                    "distribution_source": {
+                      "type": "string"
+                    },
+                    "change_distribution": {
+                      "type": "array",
+                      "items": {
+                        "type": "integer"
+                      }
+                    },
+                    "change_distribution_labels": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "market_sign": {
+                      "type": "string"
+                    },
+                    "limit_board_height": {
+                      "type": "integer"
+                    },
+                    "limit_board_pressure": {
+                      "type": "integer"
+                    },
+                    "limit_board_recent_tops": {
+                      "type": "null"
+                    },
+                    "ths_mood_index_today": {
+                      "type": "integer"
+                    },
+                    "ths_mood_index_percent20": {
+                      "type": "integer"
+                    },
+                    "ths_mood_index_percent50": {
+                      "type": "integer"
+                    },
+                    "continue_limit_up_risk_today": {
+                      "type": "number"
+                    },
+                    "continue_limit_up_risk_median": {
+                      "type": "number"
+                    },
+                    "one_hundred_day_high_today": {
+                      "type": "integer"
+                    },
+                    "one_hundred_day_high_median": {
+                      "type": "integer"
+                    },
+                    "one_hundred_day_high_percent20": {
+                      "type": "number"
+                    },
+                    "one_hundred_day_high_percent50": {
+                      "type": "integer"
+                    },
+                    "market_continue_board_first_num": {
+                      "type": "integer"
+                    },
+                    "market_continue_board_second_num": {
+                      "type": "integer"
+                    },
+                    "market_turnover_today": {
+                      "type": "integer"
+                    },
+                    "market_turnover_increase": {
+                      "type": "integer"
+                    },
+                    "market_turnover_ratio": {
+                      "type": "integer"
+                    },
+                    "market_turnover_median": {
+                      "type": "integer"
+                    },
+                    "limit_up_turnover_today": {
+                      "type": "null"
+                    },
+                    "limit_up_turnover_increase": {
+                      "type": "null"
+                    },
+                    "limit_up_turnover_ratio": {
+                      "type": "null"
+                    },
+                    "limit_up_turnover_median": {
+                      "type": "null"
+                    },
+                    "prev_limit_return_today": {
+                      "type": "number"
+                    },
+                    "prev_limit_return_median": {
+                      "type": "number"
+                    },
+                    "prev_limit_return_p20": {
+                      "type": "number"
+                    },
+                    "prev_limit_return_p50": {
+                      "type": "number"
+                    },
+                    "prev_open_board_return_today": {
+                      "type": "number"
+                    },
+                    "prev_open_board_return_median": {
+                      "type": "number"
+                    },
+                    "prev_open_board_return_p20": {
+                      "type": "number"
+                    },
+                    "prev_open_board_return_p50": {
+                      "type": "number"
+                    },
+                    "prev_continue_return_today": {
+                      "type": "number"
+                    },
+                    "prev_continue_return_median": {
+                      "type": "number"
+                    },
+                    "prev_continue_return_p20": {
+                      "type": "number"
+                    },
+                    "prev_continue_return_p50": {
+                      "type": "number"
+                    },
+                    "mood_source": {
+                      "type": "string"
+                    },
+                    "mood_source_update_time": {
+                      "type": "string"
+                    },
+                    "limit_up_all_num": {
+                      "type": "null"
+                    },
+                    "limit_up_one_num": {
+                      "type": "null"
+                    },
+                    "limit_up_two_num": {
+                      "type": "null"
+                    },
+                    "limit_up_two_promotion_rate": {
+                      "type": "null"
+                    },
+                    "limit_up_three_num": {
+                      "type": "null"
+                    },
+                    "limit_up_three_promotion_rate": {
+                      "type": "null"
+                    },
+                    "limit_up_four_num": {
+                      "type": "null"
+                    },
+                    "limit_up_four_promotion_rate": {
+                      "type": "null"
+                    },
+                    "limit_up_high_num": {
+                      "type": "null"
+                    },
+                    "limit_up_high_promotion_rate": {
+                      "type": "null"
+                    },
+                    "three_day_continue_num": {
+                      "type": "null"
+                    },
+                    "three_day_continue_rate": {
+                      "type": "null"
+                    },
+                    "high_hundred_range_one_num": {
+                      "type": "null"
+                    },
+                    "trend_higher_num": {
+                      "type": "null"
+                    },
+                    "draw_down_limit_up_num": {
+                      "type": "null"
+                    },
+                    "draw_down_trend_num": {
+                      "type": "null"
+                    },
+                    "hundred_day_high_ts_codes": {
+                      "type": "null"
+                    },
+                    "trend_strength_ts_codes": {
+                      "type": "null"
+                    },
+                    "trend_drawdown_ts_codes": {
+                      "type": "null"
+                    },
+                    "limit_up_drawdown_ts_codes": {
+                      "type": "null"
+                    },
+                    "szzz": {
+                      "type": "null"
+                    },
+                    "north_turnover": {
+                      "type": "null"
+                    },
+                    "lift_the_ban": {
+                      "type": "null"
+                    },
+                    "rzrq_lrye": {
+                      "type": "null"
+                    },
+                    "rzrq_jlr": {
+                      "type": "null"
+                    },
+                    "market_financing_ipo": {
+                      "type": "null"
+                    },
+                    "market_financing_add": {
+                      "type": "null"
+                    },
+                    "market_financing_bond": {
+                      "type": "null"
+                    },
+                    "increase_or_decrease_zjc": {
+                      "type": "null"
+                    },
+                    "decade_treasury_bonds_profit": {
+                      "type": "null"
+                    }
+                  }
+                },
+                "volume_trend": {
+                  "type": "object",
+                  "properties": {
+                    "trade_date": {
+                      "type": "string"
+                    },
+                    "source": {
+                      "type": "string"
+                    },
+                    "source_update_time": {
+                      "type": "string"
+                    },
+                    "final_minute_time": {
+                      "type": "string"
+                    },
+                    "final_volume": {
+                      "type": "integer"
+                    },
+                    "final_pre_volume": {
+                      "type": "integer"
+                    },
+                    "final_predict_volume": {
+                      "type": "integer"
+                    },
+                    "final_turnover_change": {
+                      "type": "integer"
+                    },
+                    "final_percent": {
+                      "type": "null"
+                    },
+                    "final_tips": {
+                      "type": "string"
+                    },
+                    "final_tag1": {
+                      "type": "string"
+                    },
+                    "final_tag2": {
+                      "type": "string"
+                    },
+                    "point_count": {
+                      "type": "integer"
+                    },
+                    "volume_points": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "time": {
+                            "type": "string"
+                          },
+                          "turnover": {
+                            "type": "integer"
+                          },
+                          "timestamp": {
+                            "type": "integer"
+                          },
+                          "turnover_pre": {
+                            "type": "integer"
+                          },
+                          "turnover_change": {
+                            "type": "integer"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "sources": {
+                  "type": "object",
+                  "properties": {
+                    "distribution": {
+                      "type": "object",
+                      "properties": {
+                        "status": {
+                          "type": "string"
+                        },
+                        "incident_id": {
+                          "type": "null"
+                        },
+                        "consecutive_failures": {
+                          "type": "integer"
+                        },
+                        "first_failed_at": {
+                          "type": "null"
+                        },
+                        "last_failed_at": {
+                          "type": "null"
+                        },
+                        "last_success_at": {
+                          "type": "string"
+                        },
+                        "last_source_update_time": {
+                          "type": "string"
+                        },
+                        "last_error_type": {
+                          "type": "null"
+                        },
+                        "last_error_summary": {
+                          "type": "null"
+                        },
+                        "last_alert_at": {
+                          "type": "null"
+                        },
+                        "next_probe_at": {
+                          "type": "null"
+                        },
+                        "failed_chart_keys": {
+                          "type": "array",
+                          "items": {}
+                        }
+                      }
+                    },
+                    "mood": {
+                      "type": "object",
+                      "properties": {
+                        "status": {
+                          "type": "string"
+                        },
+                        "incident_id": {
+                          "type": "null"
+                        },
+                        "consecutive_failures": {
+                          "type": "integer"
+                        },
+                        "first_failed_at": {
+                          "type": "null"
+                        },
+                        "last_failed_at": {
+                          "type": "string"
+                        },
+                        "last_success_at": {
+                          "type": "string"
+                        },
+                        "last_source_update_time": {
+                          "type": "string"
+                        },
+                        "last_error_type": {
+                          "type": "null"
+                        },
+                        "last_error_summary": {
+                          "type": "null"
+                        },
+                        "last_alert_at": {
+                          "type": "string"
+                        },
+                        "next_probe_at": {
+                          "type": "null"
+                        },
+                        "failed_chart_keys": {
+                          "type": "array",
+                          "items": {}
+                        }
+                      }
+                    },
+                    "volume_trend": {
+                      "type": "object",
+                      "properties": {
+                        "status": {
+                          "type": "string"
+                        },
+                        "incident_id": {
+                          "type": "null"
+                        },
+                        "consecutive_failures": {
+                          "type": "integer"
+                        },
+                        "first_failed_at": {
+                          "type": "null"
+                        },
+                        "last_failed_at": {
+                          "type": "string"
+                        },
+                        "last_success_at": {
+                          "type": "string"
+                        },
+                        "last_source_update_time": {
+                          "type": "string"
+                        },
+                        "last_error_type": {
+                          "type": "null"
+                        },
+                        "last_error_summary": {
+                          "type": "null"
+                        },
+                        "last_alert_at": {
+                          "type": "string"
+                        },
+                        "next_probe_at": {
+                          "type": "null"
+                        },
+                        "failed_chart_keys": {
+                          "type": "array",
+                          "items": {}
+                        }
+                      }
+                    }
+                  }
+                },
+                "excluded_live_fields": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "runtime_enabled": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "onclaw_get_board_sentiment_window",
+      "request": {
+        "method": "GET",
+        "path": "/market-data/board-sentiment-window",
+        "params": {
+          "window_size": 2
+        },
+        "data": null
+      },
+      "response": {
+        "status": 200,
+        "contentType": "application/json",
+        "contentEncoding": "gzip",
+        "contentLength": "468",
+        "shape": {
+          "type": "object",
+          "properties": {
+            "code": {
+              "type": "integer"
+            },
+            "msg": {
+              "type": "string"
+            },
+            "data": {
+              "type": "object",
+              "properties": {
+                "start_date": {
+                  "type": "string"
+                },
+                "end_date": {
+                  "type": "string"
+                },
+                "latest_date": {
+                  "type": "string"
+                },
+                "has_older": {
+                  "type": "boolean"
+                },
+                "runtime_mode": {
+                  "type": "string"
+                },
+                "recommended_refetch_ms": {
+                  "type": "integer"
+                },
+                "items": {
+                  "type": "array",
+                  "items": {
+                    "type": [
+                      "object"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "onclaw_get_limit_info_dates",
+      "request": {
+        "method": "GET",
+        "path": "/limit_info/dates",
+        "params": {},
+        "data": null
+      },
+      "response": {
+        "status": 403,
+        "contentType": "application/json",
+        "contentEncoding": null,
+        "contentLength": "30",
+        "shape": {
+          "type": "object",
+          "properties": {
+            "detail": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "onclaw_get_active_supervision",
+      "request": {
+        "method": "GET",
+        "path": "/supervise/active",
+        "params": {},
+        "data": null
+      },
+      "response": {
+        "status": 401,
+        "contentType": "application/json",
+        "contentEncoding": null,
+        "contentLength": "34",
+        "shape": {
+          "type": "object",
+          "properties": {
+            "detail": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "onclaw_get_supervision_history",
+      "request": {
+        "method": "GET",
+        "path": "/supervise/history",
+        "params": {
+          "offset": 0,
+          "limit": 1
+        },
+        "data": null
+      },
+      "response": {
+        "status": 401,
+        "contentType": "application/json",
+        "contentEncoding": null,
+        "contentLength": "34",
+        "shape": {
+          "type": "object",
+          "properties": {
+            "detail": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "onclaw_get_supervision_lines",
+      "request": {
+        "method": "GET",
+        "path": "/supervise/lines",
+        "params": {},
+        "data": null
+      },
+      "response": {
+        "status": 401,
+        "contentType": "application/json",
+        "contentEncoding": null,
+        "contentLength": "34",
+        "shape": {
+          "type": "object",
+          "properties": {
+            "detail": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "onclaw_get_supervision_line_history",
+      "request": {
+        "method": "GET",
+        "path": "/supervise/lines/history",
+        "params": {
+          "offset": 0,
+          "limit": 1
+        },
+        "data": null
+      },
+      "response": {
+        "status": 401,
+        "contentType": "application/json",
+        "contentEncoding": null,
+        "contentLength": "34",
+        "shape": {
+          "type": "object",
+          "properties": {
+            "detail": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "onclaw_get_market_timeline",
+      "request": {
+        "method": "GET",
+        "path": "/timelines",
+        "params": {
+          "start_date": "2026-08-26",
+          "end_date": "2026-08-27",
+          "limit": 1
+        },
+        "data": null
+      },
+      "response": {
+        "status": 401,
+        "contentType": "application/json",
+        "contentEncoding": null,
+        "contentLength": "34",
+        "shape": {
+          "type": "object",
+          "properties": {
+            "detail": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "onclaw_get_topic_names_by_stocks",
+      "request": {
+        "method": "POST",
+        "path": "/topics/names-by-stocks",
+        "params": {},
+        "data": {
+          "stocks": [
+            "000001.SZ"
+          ]
+        }
+      },
+      "response": {
+        "status": 401,
+        "contentType": "application/json",
+        "contentEncoding": null,
+        "contentLength": "34",
+        "shape": {
+          "type": "object",
+          "properties": {
+            "detail": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "onclaw_get_topic_market_info",
+      "request": {
+        "method": "POST",
+        "path": "/market/info",
+        "params": {},
+        "data": {
+          "codes": [
+            "000001.SZ"
+          ]
+        }
+      },
+      "response": {
+        "status": 403,
+        "contentType": "application/json",
+        "contentEncoding": null,
+        "contentLength": "30",
+        "shape": {
+          "type": "object",
+          "properties": {
+            "detail": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "onclaw_search_topics",
+      "request": {
+        "method": "GET",
+        "path": "/topics/search",
+        "params": {
+          "keyword": "机器人",
+          "skip": 0,
+          "limit": 1
+        },
+        "data": null
+      },
+      "response": {
+        "status": 401,
+        "contentType": "application/json",
+        "contentEncoding": null,
+        "contentLength": "34",
+        "shape": {
+          "type": "object",
+          "properties": {
+            "detail": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "onclaw_get_topic_info",
+      "request": {
+        "method": "GET",
+        "path": "/topics/placeholder/info",
+        "params": {},
+        "data": null
+      },
+      "response": {
+        "status": 401,
+        "contentType": "application/json",
+        "contentEncoding": null,
+        "contentLength": "34",
+        "shape": {
+          "type": "object",
+          "properties": {
+            "detail": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "onclaw_get_us_abnormal_movement_dates",
+      "request": {
+        "method": "GET",
+        "path": "/us-abnormal-movements/dates",
+        "params": {
+          "limit": 1
+        },
+        "data": null
+      },
+      "response": {
+        "status": 200,
+        "contentType": "application/json",
+        "contentEncoding": null,
+        "contentLength": "114",
+        "shape": {
+          "type": "object",
+          "properties": {
+            "code": {
+              "type": "integer"
+            },
+            "msg": {
+              "type": "string"
+            },
+            "data": {
+              "type": "object",
+              "properties": {
+                "default_trade_date": {
+                  "type": "string"
+                },
+                "items": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "date": {
+                        "type": "string"
+                      },
+                      "count": {
+                        "type": "integer"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "onclaw_get_us_abnormal_movements",
+      "request": {
+        "method": "GET",
+        "path": "/us-abnormal-movements/read/by-date/2026-08-27",
+        "params": {},
+        "data": null
+      },
+      "response": {
+        "status": 200,
+        "contentType": "application/json",
+        "contentEncoding": "gzip",
+        "contentLength": "4091",
+        "shape": {
+          "type": "object",
+          "properties": {
+            "code": {
+              "type": "integer"
+            },
+            "msg": {
+              "type": "string"
+            },
+            "data": {
+              "type": "object",
+              "properties": {
+                "trade_date": {
+                  "type": "string"
+                },
+                "table": {
+                  "type": "object",
+                  "properties": {
+                    "columns": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "rows": {
+                      "type": "array",
+                      "items": {
+                        "type": "array",
+                        "items": {
+                          "type": [
+                            "number",
+                            "string"
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+}
