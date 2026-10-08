@@ -6,7 +6,7 @@
 
 - FinAgent 母工程是业务页面、数据契约和 Harness adapter 的唯一可编辑源码。
 - 子工程只拥有依赖/基线、manifest、tag/HIF 事实、兼容矩阵与证据、构建硬化、验证、文档、provenance、npm 包、GitHub 可安装发布闭包和 Git tag。
-- 只允许通过 `scripts/build.mjs` 调用母工程 `export:harness`，单向接收编译后的 `lib/assets/skills/native`；禁止在子工程维护业务源码副本。
+- 只允许通过 `scripts/build.mjs` 调用母工程 `export:harness`，单向接收编译后的 `lib/assets/native`；禁止在子工程维护业务源码副本。
 - 候选包必须记录精确 parent commit、child source commit、release artifact commit、lockfile SHA-256、构建模式、插件版本和 DSH 基线。正式构建拒绝会影响产物的 tracked/untracked 脏输入；`build:release:dev` 只用于非发布验证。
 
 ## 固定开发基线与目标升级
@@ -22,13 +22,13 @@
 ## 保留标识符
 
 - 包目录、npm name、Host name、Cordis row、ModuleLoader id、style owner 固定为 `dsh-fin-onclaw`。
-- 不得改名：`onclaw:*` 页签、`onclaw-data`、`onclaw_data_interface`、业务 Tool、路由、后台 capability、公开 request/response 字段、native exports。
+- 不得改名：`onclaw:*` 页签、业务路由、后台 capability、公开 request/response 字段、native exports。旧 `onclaw-data` Skill、`onclaw_get_auth` 与 `onclaw_data_interface` 已退役，不得重新引入。
 - DSH exports、Cordis service、ModuleLoader/React externals 与上述协议标识应同步维护在 `reserved-identifiers.json` 和验证中。
 
 ## 发布内容与硬化
 
 - `files` allowlist 之外的内容不得发布。禁止源码、测试、sourcemap、`sourcesContent`、缓存、env、凭据、绝对工作站路径、Git 元数据、Web/Electron 产物和父仓库内容。
-- `lib/`、`assets/`、`skills/`、可选 `native/`、`provenance.json` 和 `checksums.sha256` 是 GitHub 地址安装所需的发布闭包，必须纳入 release artifact commit；`.release-staging/`、`release-evidence/`、临时 profile、tarball、依赖和缓存不得提交。
+- `lib/`、`assets/`、可选 `native/`、`provenance.json` 和 `checksums.sha256` 是 GitHub 地址安装所需的发布闭包，必须纳入 release artifact commit；`.release-staging/`、`release-evidence/`、临时 profile、tarball、依赖和缓存不得提交。
 - GitHub 安装只允许文档化不可变 tag 或 commit。release tag 的 clean clone 必须能够直接被 DSH 安装，不得依赖母工程 checkout、未提交文件或安装期构建。
 - production Host/Client 均关闭 sourcemap。Host 与 Client 使用不同、确定性记录的保守混淆 profile。
 - 禁止 property rename、control-flow flattening、dead-code injection、self-defending、debug protection、运行时代码下载、加密 JS loader、长期密钥和本地权威 entitlement。

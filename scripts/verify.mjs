@@ -25,7 +25,6 @@ assert.deepEqual(provenance.deepseekHarness, expectedBaseline)
 assert.equal(manifest.engines.node, '^22.19.0 || >=24.0.0')
 assert.equal(manifest.peerDependencies['dsh-better-sidebar'], '0.13.1 || 0.17.1 || 0.18.0-alpha.0 || 0.18.0')
 assert.equal(manifest.peerDependenciesMeta['dsh-better-sidebar'].optional, true)
-assert.equal(manifest.peerDependencies['@deepseek-ai/schemastery'], '3.18.1 || 3.18.2')
 assert.equal(manifest.peerDependencies.react, '^18.2.0')
 assert.equal(manifest.peerDependencies['react-dom'], '^18.2.0')
 assert.equal(manifest.dependencies, undefined)
@@ -38,7 +37,6 @@ for (const [name, version] of Object.entries(manifest.devDependencies)) {
 assert.deepEqual(manifest.dsh.client.inject, compatibility.providerInjection)
 for (const required of [
   'lib/index.js', 'lib/client.js', 'assets/wechat_qr.jpg',
-  'skills/onclaw-data/SKILL.md',
   'dsh.plugin.json', 'cordis.patch.yml', 'README.md', 'AGENTS.md',
   'DISTRIBUTION.md', 'provenance.json', 'checksums.sha256',
   'patch/compatibility.json', 'patch/compatibility.schema.json',
@@ -61,6 +59,7 @@ for (const [name, text] of [['Host', hostText], ['Client', clientText]]) {
   assert.doesNotMatch(text, /@onclaw\/harness-frontend|dist-harness/)
   assert.doesNotMatch(text, /C:\\Users\\|\/Users\//)
   assert.doesNotMatch(text, /BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY/)
+  assert.doesNotMatch(text, /onclaw-data|onclaw_get_auth|skill\/(?:status|install|uninstall|refresh)/)
   execFileSync(process.execPath, ['--check', path.join(root, name === 'Host' ? 'lib/index.js' : 'lib/client.js')])
 }
 for (const [description, pattern] of [
@@ -77,14 +76,12 @@ vm.runInNewContext(clientText, {
 assert.equal(clientRegistration?.id, 'dsh-fin-onclaw')
 assert.equal(typeof clientRegistration?.factory, 'function')
 assert.match(cordis, /id: dsh-fin-onclaw/)
-assert.match(cordis, /inject: \[credentials, settings, skills, tools, webServer\]/)
+assert.match(cordis, /inject: \[credentials, webServer\]/)
 assert.equal(plugin.id, 'dsh-fin-onclaw')
 
 const host = await import(`${pathToFileURL(path.join(root, 'lib/index.js')).href}?verify=${Date.now()}`)
 assert.equal(host.name, 'dsh-fin-onclaw')
 assert.equal(typeof host.apply, 'function')
-assert.equal(typeof host.createOnclawBusinessTools, 'function')
-assert.equal(host.createOnclawBusinessTools({ request: async () => undefined }).length, 24)
 
 if (process.argv.includes('--pack')) {
   const output = npmExec(['pack', '--dry-run', '--json', '--ignore-scripts'])
@@ -92,7 +89,7 @@ if (process.argv.includes('--pack')) {
   const entries = pack.files.map((file) => file.path.replaceAll('\\', '/'))
   const forbidden = /(?:^|\/)(?:src|test|tests|node_modules|\.git|\.cache|dist-web|dist-electron)(?:\/|$)|\.map$|(?:^|\/)\.env(?:\.|$)|(?:^|\/)scripts\//
   for (const entry of entries) assert.doesNotMatch(entry, forbidden, entry)
-  const allowedRoots = new Set(['package.json', 'README.md', 'AGENTS.md', 'DISTRIBUTION.md', 'LICENSE', 'dsh.plugin.json', 'cordis.patch.yml', 'provenance.json', 'checksums.sha256', 'lib', 'assets', 'native', 'skills', 'patch'])
+  const allowedRoots = new Set(['package.json', 'README.md', 'AGENTS.md', 'DISTRIBUTION.md', 'LICENSE', 'dsh.plugin.json', 'cordis.patch.yml', 'provenance.json', 'checksums.sha256', 'lib', 'assets', 'native', 'patch'])
   for (const entry of entries) assert.ok(allowedRoots.has(entry.split('/')[0]), `not allowlisted: ${entry}`)
   const checksums = (await readFile(path.join(root, 'checksums.sha256'), 'utf8'))
     .split(/\r?\n/)

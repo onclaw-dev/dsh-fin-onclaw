@@ -1,9 +1,9 @@
 {
   "exports": ["name", "inject", "apply", "default"],
   "loaders": ["window", "__ModuleLoader__", "load", "factory", "require", "module", "exports"],
-  "services": ["credentials", "settings", "skills", "tools", "webServer", "betterSidebar", "slots", "sessions", "workspaces", "conversation", "settings.section"],
+  "services": ["credentials", "webServer", "betterSidebar", "slots", "sessions", "workspaces", "conversation", "settings.section"],
   "externals": ["react", "react/jsx-runtime", "react-dom", "react-dom/client"],
-  "identities": ["dsh-fin-onclaw", "onclaw-data", "onclaw_data_interface"],
+  "identities": ["dsh-fin-onclaw"],
   "prefixes": ["onclaw:", "/onclaw/api/", "onclaw_"],
   "native": ["initRuntime", "getRuntimeState", "setRuntimeCode"]
 }

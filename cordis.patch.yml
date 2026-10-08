@@ -2,5 +2,5 @@
 - insert:
     - id: dsh-fin-onclaw
       name: dsh-fin-onclaw
-      inject: [credentials, settings, skills, tools, webServer]
+      inject: [credentials, webServer]
       config: {}

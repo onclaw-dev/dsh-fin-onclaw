@@ -57,7 +57,8 @@ run(
 if (mode === 'release') {
   await harden('host', path.join(stagingRoot, 'lib/index.js'), path.join(childRoot, 'lib/index.js'))
   await harden('client', path.join(stagingRoot, 'lib/client.js'), path.join(childRoot, 'lib/client.js'))
-  for (const directory of ['assets', 'skills', 'native']) {
+  await rm(path.join(childRoot, 'skills'), { recursive: true, force: true })
+  for (const directory of ['assets', 'native']) {
     await cp(path.join(stagingRoot, directory), path.join(childRoot, directory), {
       recursive: true,
       force: true,
@@ -107,10 +108,6 @@ function assertBaseline(manifest) {
     '@deepseek-ai/dsh-client-ui-sidebar': baseline.version,
     '@deepseek-ai/dsh-client-ui-slots': baseline.version,
     '@deepseek-ai/dsh-credentials': baseline.version,
-    '@deepseek-ai/dsh-settings': baseline.version,
-    '@deepseek-ai/dsh-skill': baseline.version,
-    '@deepseek-ai/dsh-tools': baseline.version,
-    '@deepseek-ai/schemastery': '3.18.1',
     'dsh-better-sidebar': '0.17.1',
     react: '18.3.1',
     'react-dom': '18.3.1',
@@ -119,7 +116,6 @@ function assertBaseline(manifest) {
     if (manifest.devDependencies[name] !== version) throw new Error(`${name} development baseline must equal ${version}`)
   }
   const expectedPeers = {
-    '@deepseek-ai/schemastery': '3.18.1 || 3.18.2',
     'dsh-better-sidebar': '0.13.1 || 0.17.1 || 0.18.0-alpha.0 || 0.18.0',
     react: '^18.2.0',
     'react-dom': '^18.2.0',
@@ -171,9 +167,6 @@ async function writeChecksums() {
   const roots = [
     'lib',
     'assets',
-    'skills/onclaw-data/SKILL.md',
-    'skills/onclaw-data/agents',
-    'skills/onclaw-data/references',
     'native',
     'patch',
     'dsh.plugin.json',

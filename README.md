@@ -4,7 +4,7 @@ Onclaw 的 DeepSeek Harness 商业工作台插件。当前插件版本为 `0.2.0
 
 ## 工程边界
 
-本目录是独立 Git submodule，负责依赖锁定、manifest、tag/HIF 事实、兼容矩阵、发布构建、适度混淆、验证、npm 包与 Git tag。业务页面和 Harness adapter 的唯一可编辑源码仍在母工程 `fiagent_frontend/src`。构建只允许从母工程单向导出已编译产物，不在本目录复制或修改业务 TypeScript/React 源码。为支持从 GitHub 地址直接安装，release tag 必须提交 `lib/`、`assets/`、`skills/`、可选 `native/`、`provenance.json` 和 `checksums.sha256`；这些是生成的发布闭包，不是第二份业务源码。
+本目录是独立 Git submodule，负责依赖锁定、manifest、tag/HIF 事实、兼容矩阵、发布构建、适度混淆、验证、npm 包与 Git tag。业务页面和 Harness adapter 的唯一可编辑源码仍在母工程 `fiagent_frontend/src`。构建只允许从母工程单向导出已编译产物，不在本目录复制或修改业务 TypeScript/React 源码。为支持从 GitHub 地址直接安装，release tag 必须提交 `lib/`、`assets/`、可选 `native/`、`provenance.json` 和 `checksums.sha256`；这些是生成的发布闭包，不是第二份业务源码。
 
 ## 环境与依赖
 
